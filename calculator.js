@@ -96,12 +96,28 @@ function toPercent(decimal) {
 }
 
 function generateReport() {
-  const report = {
-    username: select.learnerUsername().value,
-    pointsEarned: select.earned().innerText,
-    totalPoints: select.denominator().innerText,
-  }
+  const interview = document.title
+  const username = select.learnerUsername().value
 
+  let report = `
+# ${interview} : Evaluation Report
+
+Username: ${username}
+Points Earned: ${select.earned().innerText}
+Total Points: ${select.denominator().innerText}
+
+${sectionBreakdown()}
+`
+
+  // Generate a file for the report and download it using a temporary, invisible link
+  const tempLink = document.createElement('a')
+  const dataStr = "data:text/plain;base64," + btoa(report)
+  tempLink.href = dataStr
+  tempLink.download = username.length > 0 ? `${username}.md` : 'report.md'
+  tempLink.click()
+}
+
+function sectionBreakdown() {
   const rawSections = []
   let currentSection
 
@@ -117,20 +133,16 @@ function generateReport() {
         if (MATCH_REQ.test(text)) {
           const [maxValue, reqText] = text.match(MATCH_REQ).slice(1)
           const givenValue = elem.querySelector('input.req-points').value
-          currentSection.reqs.push(`[${givenValue} / ${maxValue}] : ${reqText}`)
+          currentSection.reqs.push(`- [${givenValue}/${maxValue}] : ${reqText}`)
         }
         break;
     }
   })
 
-  report.sections = rawSections.filter((section) => section.reqs.length > 0)
+  const sections = rawSections.filter((section) => section.reqs.length > 0)
 
-  // Generate a file for the report and download it using a temporary, invisible link
-  const tempLink = document.createElement('a')
-  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(report));
-  tempLink.href = dataStr
-  tempLink.download = report.username.length > 0 ? `${report.username}.json` : 'report.json'
-  tempLink.click()
+  return sections.map(({section, reqs}) => `## ${section}\n\n${reqs.join("\n")}`)
+                 .join("\n\n")
 }
 
 // Load and execute
