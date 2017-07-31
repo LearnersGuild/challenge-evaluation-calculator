@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+
+  "name": "Challenge evaluation calculator",
+  "description": "Generate a calculator inside a coding challenge gist for evaluating submissions",
+  "version": "1.0",
+
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://gist.github.com/*"],
+      "js": ["calculator.js"]
+    }
+  ],
+
+  "permissions": [
+    "activeTab"
+  ]
+}
