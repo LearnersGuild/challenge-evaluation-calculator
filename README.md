@@ -8,7 +8,8 @@ In short, it turns this:
 
 into this:
 
-![after](https://user-images.githubusercontent.com/709100/28796898-4bb8f166-760d-11e7-89f8-2a0fc8e30174.png)
+![after](https://user-images.githubusercontent.com/709100/28798464-8e778986-7612-11e7-9cd4-f36cceb0fb00.png)
+
 
 ## Installation
 
