@@ -1,6 +1,17 @@
+const select = {
+  taskListItems: () => document.querySelectorAll('li.task-list-item'),
+  reqPoints: () => document.querySelectorAll('.req-points'),
+
+  footer: () => document.querySelector('footer.evaluation-calculator'),
+  denominator: () => document.querySelector('.points-denominator'),
+  earned: () => document.querySelector('.points-earned'),
+  percent: () => document.querySelector('.points-percent'),
+}
+
 function insertFooter() {
   const footer = document.createElement('footer')
 
+  footer.classList.add('evaluation-calculator')
   footer.style['position'] = 'fixed'
   footer.style['width'] = '100%'
   footer.style['min-height'] = '52px'
@@ -12,6 +23,7 @@ function insertFooter() {
     <strong>Challenge Evaluation Calculator</strong> &nbsp; | &nbsp;
     Points total:
     <span class="points-earned">0</span> / <span class="points-denominator">0</span>
+    (<span class="points-percent">0</span>%)
   `
 
   document.body.appendChild(footer)
@@ -20,7 +32,7 @@ function insertFooter() {
 function replaceCheckboxesWithInputs() {
   const matchReq = /^ (\d+): (.+)$/
 
-  document.querySelectorAll('li.task-list-item').forEach((elem) => {
+  select.taskListItems().forEach((elem) => {
     const itemText = elem.innerText
 
     if (matchReq.test(itemText)) {
@@ -28,9 +40,10 @@ function replaceCheckboxesWithInputs() {
       const value = itemText.match(matchReq)[1]
       const input = makeInput(value)
 
-      // checkbox.replaceWith(input)
       elem.prepend(input)
       checkbox.remove()
+
+      input.addEventListener('change', calculatePointsEarned)
       incrementDenominator(parseInt(value))
     }
   })
@@ -44,23 +57,32 @@ function makeInput(maxVal) {
   ipt.classList.add('req-points', 'form-control')
   ipt.min = 0
   ipt.max = maxVal
-  ipt.addEventListener('change', calculatePointsEarned)
+
   return ipt
 }
 
 function incrementDenominator(points) {
-  const elem = document.querySelector('.points-denominator')
-  elem.innerText = parseInt(elem.innerText) + points
+  const denom = select.denominator()
+  denom.innerText = parseInt(denom.innerText) + points
 }
 
 function calculatePointsEarned(event) {
   event && event.stopPropagation()
 
   let points = 0
-  document.querySelectorAll('.req-points').forEach((elem) => {
+  select.reqPoints().forEach((elem) => {
     points += parseInt(elem.value)
   })
-  document.querySelector('.points-earned').innerText = points
+
+  const denom = parseInt(select.denominator().innerText)
+  const percent = toPercent(points / denom)
+
+  select.earned().innerText = points
+  select.percent().innerText = percent
+}
+
+function toPercent(decimal) {
+  return Math.round(decimal * 100 * 100) / 100
 }
 
 // Load and execute
