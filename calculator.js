@@ -1,5 +1,5 @@
 // Pattern to match for requirement checkboxes
-const MATCH_REQ = /^\s*(\d+): (.+)$/
+const MATCH_REQ = /^\s*(\d+): (.+)$/m
 
 // Element selectors
 const select = {
