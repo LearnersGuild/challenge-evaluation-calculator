@@ -15,6 +15,10 @@
     {
       "matches": ["https://gist.github.com/*"],
       "js": ["calculator.js"]
+    },
+    {
+      "matches": ["https://github.com/LearnersGuild/*"],
+      "js": ["calculator.js"]
     }
   ],
 
